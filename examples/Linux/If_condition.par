@@ -1,0 +1,29 @@
+`format ELF64 executable 3` ; output file format
+
+@entry(_start)              ; program entry point (label _start)
+
+`segment readable writeable`; start of variables section
+
+    byte i = 1              ; variable i
+    byte a = 1              ; variable a
+
+    char msg = "hello",10   ; variable msg
+
+`segment readable executable`; start of code section
+
+    label _start            ; program entry point
+        if(i, ==, a)        ; start of if condition
+            print(msg, 14)  ; call function
+        end.                ; end of if condition
+        
+        syscall(60)         ; exit
+
+    func print              ; start of function print
+        rsi = $arg_0
+        rdx = $arg_1
+        rdi = 1
+        syscall(1)
+    end.                    ; end of function print
+
+; output:
+; hello
