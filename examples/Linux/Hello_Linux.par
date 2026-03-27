@@ -1,12 +1,15 @@
-`format ELF64 executable 3` ; output file format
+; output file format
+`format ELF64 executable 3`
 
 @entry(_start)              ; program entry point (label _start)
 
-`segment readable writeable`; start of variables section
+; start of variables section
+`segment readable writeable`
 
     char msg = "hello",10   ; variable msg
 
-`segment readable executable`; start of code section
+; start of code section
+`segment readable executable`
 
     label _start            ; program entry point
         print(msg, 14)      ; call function
