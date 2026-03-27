@@ -1,5 +1,5 @@
 # Parity
-The Parity programming language
+Parity programming language
 
 Fasm Edition
 # Compile
@@ -8,6 +8,9 @@ compiler:
 bash bd.sh
 ```
 program for linux:
+```
+sudo apt install fasm
+```
 ```
 ./parity input.par -o output.asm -64
 
