@@ -197,6 +197,8 @@ void chkcom(){
         else if(command.size() >= 3 && command[1] == "=") tvar("mov", command[0], command[2]);
         else if(command.size() >= 3 && command[1] == "+=") tvar("add", command[0], command[2]);
         else if(command.size() >= 3 && command[1] == "-=") tvar("sub", command[0], command[2]);
+        else if(command.size() >= 3 && command[1] == "*=") tvar("imul", command[0], command[2]);
+        else if(command.size() >= 3 && command[1] == "/=") tvar("idiv", command[0], command[2]);
         else if(command[0] == "syscall"){
             if(!arg.empty()) outtext("mov rax, " + arg[0]);
             outtext("syscall");
