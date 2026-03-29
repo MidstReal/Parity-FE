@@ -96,20 +96,32 @@ void tvar(string oper, string left, string right) {
     int t2 = is_var(right);
 
     string oper_l = left;
-    if(t1 > 0) oper_l = "[" + left + "]";
+    if (left[0] == '&') {
+        oper_l = left.substr(1);
+    }
+    else if (t1 > 0) {
+        oper_l = "[" + left + "]";
+    }
+
     string oper_r = right;
-    if(t2 > 0) oper_r = "[" + right + "]";
+    if (right[0] == '&') {
+        oper_r = right.substr(1);
+    }
+    else if (t2 > 0) {
+        oper_r = "[" + right + "]";
+    }
 
     if (t1 > 0 && t2 > 0) {
         string r = "";
-        if(t1 == 1) r = "al";
-        else if(t1 == 2) r = "ax";
-        else if(t1 == 4) r = "eax";
-        else if(t1 == 8) r = "rax";
-        
+        if (t1 == 1) r = "al";
+        else if (t1 == 2) r = "ax";
+        else if (t1 == 4) r = "eax";
+        else if (t1 == 8) r = "rax";
+
         outtext("mov " + r + ", " + oper_r);
         outtext(oper + " " + oper_l + ", " + r);
-    } else {
+    }
+    else {
         outtext(oper + " " + oper_l + ", " + oper_r);
     }
 }
