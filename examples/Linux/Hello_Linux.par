@@ -3,13 +3,12 @@
 
 @entry(_start)              ; program entry point (label _start)
 
-; start of variables section
-`segment readable writeable`
-
+; start of data section
+<Data>
     char msg = "hello",10   ; variable msg
 
 ; start of code section
-`segment readable executable`
+<Code>
 
     label _start            ; program entry point
         print(msg, 14)      ; call function
