@@ -277,6 +277,15 @@ void chkcom(){
             else if(arg.size() >= 1)
                 outtext("jmp " + arg[0]);
         }
+    
+        #ifdef _WIN32
+            else if(command[0] == "<iData>") outtext("section '.idata' data import readable");
+            else if(command[0] == "<Data>") outtext("section '.data' data readable writeable");
+            else if(command[0] == "<Code>") outtext("section '.code' code readable writeable executable");
+        #elif __linux__
+            else if(command[0] == "<Data>") outtext("segment readable writeable");
+            else if(command[0] == "<Code>") outtext("segment readable executable");
+        #endif
 
         else if(command[0] == "byte" || command[0] == "char") {outtext(command[1] + " db " + aft); varbytes.push_back(command[1]);}
         else if(command[0] == "short") {outtext(command[1] + " dw " + aft); varwords.push_back(command[1]);}
