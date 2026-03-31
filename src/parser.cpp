@@ -2,18 +2,6 @@
 #include "global.h"
 #include "out_utils.h"
 
-set<string> all_regs = {
-    "rax", "rbx", "rcx", "rdx", "rsi", "rdi", "rbp", "rsp", 
-    "r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15",
-    "eax", "ebx", "ecx", "edx", "esi", "edi", "ebp", "esp", 
-    "r8d", "r9d", "r10d", "r11d", "r12d", "r13d", "r14d", "r15d",
-    "ax", "bx", "cx", "dx", "si", "di", "bp", "sp", 
-    "r8w", "r9w", "r10w", "r11w", "r12w", "r13w", "r14w", "r15w",
-    "al", "bl", "cl", "dl", "sil", "dil", "bpl", "spl", 
-    "r8b", "r9b", "r10b", "r11b", "r12b", "r13b", "r14b", "r15b",
-    "ah", "bh", "ch", "dh"
-};
-
 vector<string> varbytes;
 vector<string> varwords;
 vector<string> vardwords;
@@ -21,7 +9,6 @@ vector<string> varqwords;
 
 vector<long int> label_history;
 long int lab_ctr = 0;
-long int if_ctr = 0;
 
 bool isfunc = false;
 
@@ -49,10 +36,6 @@ void farg(vector<string>& arg){
             else if(mode16) arg[i] = "[bp+" + to_string(argNum * 2 + 4) + "]";
         }
     }
-}
-
-bool is_register(std::string s) {
-    return all_regs.find(s) != all_regs.end();
 }
 
 int is_var(string s) {
@@ -340,16 +323,43 @@ void chkcom(){
 
         if(cmf){
             type(arg);
-            for(int i = arg.size() - 1; i >= 0; i--) {
-                if(!arg[i].empty()) {
-                    outtext("push " + tvarwf(arg[i]));
+            if(command[0].size() >= 3 && command[0].substr(0, 3) == "!!!"){
+                string regs[] = {"rax", "rdi", "rsi", "rdx", "rcx", "r8", "r9"};
+                for(int i = 0;i<arg.size(); i++) {
+                    outtext("mov " + regs[i] + ", " + tvarwf(arg[i]));
                 }
-            }
-            outtext("call " + command[0]);
-            if(!arg.empty()){
-                int wordSize = mode64 ? 8 : (mode32 ? 4 : 2);
-                string reg = mode64 ? "rsp" : (mode32 ? "esp" : "sp");
-                outtext("add " + reg + ", " + to_string(arg.size() * wordSize));
+                outtext("syscall");
+            }else if(command[0].size() >= 2 && command[0].substr(0, 2) == "!!"){
+                string regs[] = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
+                for(int i = 0;i<arg.size(); i++) {
+                    outtext("push " + regs[i]);
+                }
+                for(int i = 0;i<arg.size(); i++) {
+                    outtext("mov " + regs[i] + ", " + tvarwf(arg[i]));
+                }
+                outtext("call " + command[0].substr(2));
+
+                for(int i = 6;i>=arg.size(); i--) {
+                    outtext("pop " + regs[i]);
+                }
+            }else if(command[0].size() >= 1 && command[0].substr(0, 1) == "!"){
+                string regs[] = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
+                for(int i = 0;i<arg.size(); i++) {
+                    outtext("mov " + regs[i] + ", " + tvarwf(arg[i]));
+                }
+                outtext("call " + command[0].substr(1));
+            } else{
+                for(int i = arg.size() - 1; i >= 0; i--) {
+                    if(!arg[i].empty()) {
+                        outtext("push " + tvarwf(arg[i]));
+                    }
+                }
+                outtext("call " + command[0]);
+                if(!arg.empty()){
+                    int wordSize = mode64 ? 8 : (mode32 ? 4 : 2);
+                    string reg = mode64 ? "rsp" : (mode32 ? "esp" : "sp");
+                    outtext("add " + reg + ", " + to_string(arg.size() * wordSize));
+                }
             }
         }
     }
