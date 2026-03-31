@@ -16,7 +16,7 @@
 
     label _start            ; program entry point
         while(i, <, a)      ; start of while condition (start of loop)
-            print(&msg, 14)  ; call function
+            print(&msg, 6)  ; call function
             @inc([i])       ; assembler operation "inc" (i += 1), in asm "inc [i]"
         end.                ; end of while condition
         
