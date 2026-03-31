@@ -68,69 +68,69 @@ void tvar(string oper, string left, string right) {
     int t2 = is_var(right);
 
     string oper_l = left;
-    if (left[0] == '&') {
+    if(left[0] == '&') {
         oper_l = left.substr(1);
     }
-    else if (t1 > 0) {
+    else if(t1 > 0) {
         oper_l = "[" + left + "]";
     }
 
     string oper_r = right;
-    if (right[0] == '&') {
+    if(right[0] == '&') {
         oper_r = right.substr(1);
     }
-    else if (t2 > 0) {
+    else if(t2 > 0) {
         oper_r = "[" + right + "]";
     }
 
-    if (t1 > 0 && t2 > 0) {
+    if(t1 > 0 && t2 > 0) {
         string r = "";
-        if (t1 == 1) r = "al";
-        else if (t1 == 2) r = "ax";
-        else if (t1 == 4) r = "eax";
-        else if (t1 == 8) r = "rax";
+        if(t1 == 1) r = "al";
+        else if(t1 == 2) r = "ax";
+        else if(t1 == 4) r = "eax";
+        else if(t1 == 8) r = "rax";
 
         outtext("mov " + r + ", " + oper_r);
         outtext(oper + " " + oper_l + ", " + r);
     }
-    else {
+    else{
         outtext(oper + " " + oper_l + ", " + oper_r);
     }
 }
 string tvarwf(string input) {
     string final;
-    if (input[0] == '&') {
+    if(input[0] == '&') {
         final = input.substr(1);
     } 
-    else if (is_var(input) > 0) {
+    else if(is_var(input) > 0) {
         final = "[" + input + "]";
     } else final = input;
     return final;
 }
 void movta(string command, string command2) {
-    if (mode16) {
+    if(mode16) {
         outtext("push ax");
         outtext("mov ax, [" + command.substr(1) + "]");
-    } else if (mode32) {
+    } else if(mode32) {
         outtext("push eax");
         outtext("mov eax, [" + command.substr(1) + "]");
-    } else if (mode64) {
+    } else if(mode64) {
         outtext("push rax");
         outtext("mov rax, [" + command.substr(1) + "]");
     }
 
-    if (is_var(command.substr(1)) == 1)      outtextWE("mov byte ");
-    else if (is_var(command.substr(1)) == 2) outtextWE("mov word ");
-    else if (is_var(command.substr(1)) == 4) outtextWE("mov dword ");
-    else if (is_var(command.substr(1)) == 8) outtextWE("mov qword ");
+    if(is_var(command.substr(1)) == 1) outtextWE("mov byte ");
+    else if(is_var(command.substr(1)) == 2) outtextWE("mov word ");
+    else if(is_var(command.substr(1)) == 4) outtextWE("mov dword ");
+    else if(is_var(command.substr(1)) == 8) outtextWE("mov qword ");
 
-    if (mode16) {
+    if(mode16) {
         outtext("[ax], " + command2);
         outtext("pop ax");
-    } else if (mode32) {
+    } else if(mode32) {
         outtext("[eax], " + command2);
         outtext("pop eax");
-    } else if (mode64) {
+    } else if(mode64) {
         outtext("[rax], " + command2);
         outtext("pop rax");
     }
@@ -139,7 +139,7 @@ void movta(string command, string command2) {
 
 void chkcom(){    
     size_t first = line.find_first_not_of(" \t\r\n");
-    if (first == string::npos) return;
+    if(first == string::npos) return;
     line = line.substr(first);
 
     //outtext("\n;--------------------" + line + "--------------------");
@@ -151,48 +151,48 @@ void chkcom(){
     bool inbkt = false;
     bool cmf = false;
 
-    if (line[0] == '`') {
+    if(line[0] == '`') {
         outtext(line.substr(1, line.length() - 2));
         return;
     }
 
-    for (int i = 0; i < line.length(); i++) {
+    for(int i = 0; i < line.length(); i++) {
         if(line[i] == ';') break;
-        if (ccom >= command.size()) command.push_back("");
-        if (line[i] == '(') {
+        if(ccom >= command.size()) command.push_back("");
+        if(line[i] == '(') {
             inbkt = true;
             continue;
         }
-        if (line[i] == ')') {
+        if(line[i] == ')') {
             inbkt = false;
             continue;
         }
 
-        if (inbkt) {
-            if (carg >= arg.size()) arg.push_back("");
-            if (line[i] == ',') {
-                if (!arg[carg].empty()) carg++;
-            } else {
+        if(inbkt) {
+            if(carg >= arg.size()) arg.push_back("");
+            if(line[i] == ',') {
+                if(!arg[carg].empty()) carg++;
+            } else{
                 arg[carg] += line[i];
             }
-        } else {
-            if (line[i] == ' ' || line[i] == '\t') {
-                if (!command[ccom].empty()) ccom++;
-            } else {
+        } else{
+            if(line[i] == ' ' || line[i] == '\t') {
+                if(!command[ccom].empty()) ccom++;
+            } else{
                 command[ccom] += line[i];
             }
         }
     }
 
-    for (auto& a : arg) {
+    for(auto& a : arg) {
         size_t start = a.find_first_not_of(" \t");
-        if (start != string::npos) a = a.substr(start);
+        if(start != string::npos) a = a.substr(start);
     }
     string aft = line.substr(line.find('=') + 1);
     int aftpos = line.find('=');
 
     size_t start = aft.find_first_not_of(" \t");
-    if (start != string::npos) aft = aft.substr(start);
+    if(start != string::npos) aft = aft.substr(start);
 
     if(command.size() >= 1){
         type(command);
@@ -266,7 +266,7 @@ void chkcom(){
                 long int last_id = label_history.back();
                 label_history.pop_back();
 
-                if (last_id < 0) {
+                if(last_id < 0) {
                     long int actual_id = (-last_id) - 1;
                     outtext("jmp .LBL_START_" + to_string(actual_id));
                     outtext(".LBL_END_" + to_string(actual_id) + ":");
@@ -298,7 +298,10 @@ void chkcom(){
             else if(arg.size() >= 1)
                 outtext("jmp " + arg[0]);
         }
-    
+
+        else if(command[0] == "<Console>") outtext("format PE Console");
+        else if(command[0] == "<ELF64>") outtext("format ELF64 executable 3");
+
         #ifdef _WIN32
             else if(command[0] == "<iData>") outtext("section '.idata' data import readable");
             else if(command[0] == "<Data>") outtext("section '.data' data readable writeable");
@@ -313,6 +316,13 @@ void chkcom(){
         else if(command[0] == "int") {outtext(command[1] + " dd " + tvarwf(aft)); vardwords.push_back(command[1]);}
         else if(command[0] == "bigint") {outtext(command[1] + " dq " + tvarwf(aft)); varqwords.push_back(command[1]);}
         else if(command[0] == "const") {outtext(command[1] + " equ " + tvarwf(aft)); }
+
+        else if(command[0] == "res"){
+            if(command[1] == "byte" || command[1] == "char") {outtext(command[2] + " rb " + tvarwf(aft)); varbytes.push_back(command[2]);}
+            else if(command[1] == "short") {outtext(command[2] + " rw " + tvarwf(aft)); varwords.push_back(command[2]);}
+            else if(command[1] == "int") {outtext(command[2] + " rd " + tvarwf(aft)); vardwords.push_back(command[2]);}
+            else if(command[1] == "bigint") {outtext(command[2] + " rq " + tvarwf(aft)); varqwords.push_back(command[2]);}
+        }
 
 
         else if(command[0][0] == '@'){
@@ -330,8 +340,8 @@ void chkcom(){
 
         if(cmf){
             type(arg);
-            for (int i = arg.size() - 1; i >= 0; i--) {
-                if (!arg[i].empty()) {
+            for(int i = arg.size() - 1; i >= 0; i--) {
+                if(!arg[i].empty()) {
                     outtext("push " + tvarwf(arg[i]));
                 }
             }
