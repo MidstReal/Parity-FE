@@ -16,7 +16,7 @@
 
     label _start            ; program entry point
         if(i, ==, a)        ; start of if condition
-            print(msg, 6)  ; call function
+            print(&msg, 6)  ; call function
         end.                ; end of if condition
         
         syscall(60)         ; exit

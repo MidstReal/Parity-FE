@@ -11,7 +11,7 @@
 <Code>
 
     label _start            ; program entry point
-        print(msg, 14)      ; call function
+        print(&msg, 14)      ; call function
         syscall(60)         ; exit
 
     func print              ; start of function print
